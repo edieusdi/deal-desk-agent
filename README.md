@@ -129,7 +129,22 @@ HUBSPOT_ACCESS_TOKEN=your_hubspot_private_app_token_here
 
 ## Usage
 
-**Input format (`deal.json`):**
+### Option 1 — Streamlit web app (recommended for exploration)
+
+```bash
+streamlit run app.py
+```
+
+Open [http://localhost:8501](http://localhost:8501) in your browser. The app has two views:
+
+- **Single Deal Analyzer** — enter deal parameters using the form on the left; the risk barometer, approval tier, and commercial metrics update live on the right. Click **Run AI Evaluation** to add Claude's narrative assessment.
+- **Portfolio View** — upload a CSV of deals (or load the included `deals.csv` sample) to see a full portfolio table with tier counts, total TCV, blocked revenue, and average risk score. Select any deal from the table to drill into its full analysis.
+
+---
+
+### Option 2 — CLI: single deal
+
+Create a `deal.json` file:
 
 ```json
 {
@@ -140,18 +155,82 @@ HUBSPOT_ACCESS_TOKEN=your_hubspot_private_app_token_here
   "list_price": 300000,
   "discount_pct": 16.7,
   "contract_months": 24,
-  "custom_terms": ["net-60", "audit-rights"]
+  "custom_terms": ["net-60", "audit-rights"],
+  "strategic_context": "Fortune 500 logo — strong strategic value",
+  "sales_rep": "sarah.jones",
+  "close_date": "2026-06-30",
+  "deal_stage": "Proposal"
 }
 ```
 
-**Output:** The agent prints a routing decision and writes a structured result to `output/DEAL-1234.json`.
+Then run:
+
+```bash
+python main.py --deal deal.json
+```
+
+---
+
+### Option 3 — CLI: batch process from CSV
+
+```bash
+python main.py --csv deals.csv
+```
+
+The CSV must have the following columns. The `custom_terms` column uses `|` as a separator for multiple values.
+
+| Column | Example |
+|---|---|
+| `deal_id` | DEAL-001 |
+| `customer` | Acme Corp |
+| `segment` | enterprise |
+| `arr` | 250000 |
+| `list_price` | 300000 |
+| `discount_pct` | 16.7 |
+| `contract_months` | 24 |
+| `custom_terms` | net-60\|audit-rights |
+| `strategic_context` | Fortune 500 logo |
+| `sales_rep` | sarah.jones |
+| `close_date` | 2026-06-30 |
+| `deal_stage` | Proposal |
+
+---
+
+### Option 4 — CLI: skip AI evaluation
+
+Run governance and risk scoring only, without making an API call. Useful for testing or when no API key is available.
+
+```bash
+python main.py --csv deals.csv --no-ai
+```
+
+---
+
+### CLI output
 
 ```
-Decision  : L2 — Deal Desk Manager approval required
-Risk score: 62 / 100
-Reason    : Discount within policy; custom terms (audit-rights) require Legal review
-Routed to : jane.doe@company.com
+────────────────────────────────────────────────────────
+  DEAL-001  ·  Acme Corp
+────────────────────────────────────────────────────────
+  Decision   : L2 — Deal Desk Manager approval required
+  Risk score : 23 / 100  (MEDIUM)
+  Action     : Escalate
+  Flags      : DISCOUNT 16.7% — Mid-Tier approval required
+  Routed to  : deal-desk-manager@company.com
+────────────────────────────────────────────────────────
+
+  Manager Brief    → output/DEAL-001_manager_brief.txt
+  Deal Desk Report → output/DEAL-001_deal_desk_report.txt
+  JSON             → output/DEAL-001.json
 ```
+
+Per deal, the agent writes three files to `output/`:
+
+| File | Audience | Contents |
+|---|---|---|
+| `DEAL-XXX_manager_brief.txt` | Sales Manager | One-page summary: snapshot, risk flags, routing decision, recommended action |
+| `DEAL-XXX_deal_desk_report.txt` | Deal Desk team | Full internal report: all metrics, risk barometer, functional approvals, AI narrative, next steps |
+| `DEAL-XXX.json` | CRM / downstream | Structured JSON of all governance and risk fields |
 
 ---
 
@@ -225,12 +304,17 @@ pytest
 |---|---|
 | Dev environment setup | ✅ Done |
 | GitHub repo created | ✅ Done |
-| Anthropic API integration | 🔄 In progress |
-| Deal scoring logic | 🔄 In progress |
+| Core data models | ✅ Done |
+| Governance engine | ✅ Done |
+| Six-dimension risk barometer | ✅ Done |
+| Anthropic Claude API integration | ✅ Done |
+| CLI — single deal + batch CSV | ✅ Done |
+| Streamlit web app | ✅ Done |
+| Test coverage (pytest) — 35 tests | ✅ Done |
+| Security hardening | ✅ Done |
 | HubSpot integration | 📅 Planned |
 | OpenAI provider toggle | 📅 Planned |
 | FastAPI endpoint | 📅 Planned |
-| Test coverage (pytest) | 📅 Planned |
 | v1 published | 📅 Planned |
 
 ---

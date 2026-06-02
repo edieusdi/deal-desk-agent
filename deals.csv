@@ -1,0 +1,8 @@
+deal_id,customer,segment,arr,list_price,discount_pct,contract_months,custom_terms,strategic_context,sales_rep,close_date,deal_stage
+DEAL-001,Acme Corp,enterprise,250000,300000,16.7,24,"net-60|audit-rights",Fortune 500 logo with strong strategic value,sarah.jones,2026-06-30,Proposal
+DEAL-002,TechStart Inc,smb,45000,45000,0.0,12,"",New SMB logo — no special terms,mike.chen,2026-06-15,Negotiation
+DEAL-003,Global Bank,enterprise,500000,1000000,50.0,36,"MFN|net-90|MSA-deviation",Strategic account displacing primary competitor,john.smith,2026-07-31,Proposal
+DEAL-004,RetailCo,mid-market,80000,100000,20.0,24,"","Standard renewal — long-standing customer",sarah.jones,2026-06-20,Closed Won
+DEAL-005,FinanceHub,enterprise,120000,200000,40.0,12,"SLA-deviation|milestone-billing",High competitive pressure — must-win deal,mike.chen,2026-06-28,Negotiation
+DEAL-006,LogisticsPlus,mid-market,90000,90000,0.0,36,"",Three-year commit with no discount request,sarah.jones,2026-07-15,Proposal
+DEAL-007,GovAgency,enterprise,300000,400000,25.0,24,"government|audit-rights|net-60",Government procurement — compliance requirements apply,john.smith,2026-08-31,Proposal
